@@ -1,2 +1,4 @@
 config.py
 venv/
+logis.db
+internship.db
