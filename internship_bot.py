@@ -49,8 +49,20 @@ async def start(message:types.Message):
         cursor.connection.commit()
     await message.answer(f'привет, {message.from_user.full_name}', reply_markup=start_keyboard)
 
+
 @dp.callback_query_handler(lambda call: call.data == "intership_callback")
-async def intership_callback(callback:types.CallbackQuery):
-    await callback.answer("Кнопка работает")
+async def internship_callback(callback: types.CallbackQuery):
+    await bot.answer_callback_query(callback.id)
+    await bot.send_message(callback.from_user.id, "Отправьте свои данные (Имя Фамилия)")
+
+
+@dp.message_handler()
+async def process_name(message: types.Message, state: FSMContext):
+    first_name, last_name = message.text.split(' ', 1)
+    cursor.execute("INSERT INTO internship (first_name, last_name, created) VALUES (?, ?, ?);",
+                   (first_name, last_name, time.ctime()))
+    cursor.connection.commit()
+    await message.answer("Ваши Данные успешно сохранены!")
+    await bot.send_message(chat_id=(-1002002055590), text=f"Новая заявка на стажировку:\nИмя: {first_name}\nФамилия: {last_name}")
 
 executor.start_polling(dp, skip_updates=True)
