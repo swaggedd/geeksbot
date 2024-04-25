@@ -56,7 +56,7 @@ class UserRegisterState(StatesGroup):
     last_name = State()
     phone = State()
     region = State()
-
+    
 @dp.message_handler(text="Регистрация")
 async def register_template(message:types.Message):
     await message.answer("Для регистрации в нашем карго, нам нужно от вас:")
